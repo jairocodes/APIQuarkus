@@ -18,8 +18,9 @@ public class ProjectRepository implements IProjectRepo {
 //     public void saveProject(Project pro) {
 //          persist(pro);}
 
-     public Project getProject(){
-          return find("id", 1).firstResult();
+     @Override
+     public Project getProject(Integer id){
+          return findById(id);
      }
 
      @Override

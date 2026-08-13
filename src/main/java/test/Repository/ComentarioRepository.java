@@ -25,8 +25,9 @@ public class ComentarioRepository implements IComentarioRepo {
 
 
 
-    public Comentario getComentario(){
-        return find("id", 1).firstResult();
+    @Override
+    public Comentario getComentario(Integer id){
+        return findById(id);
     }
 
     @Override

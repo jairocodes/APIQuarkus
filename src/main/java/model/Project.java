@@ -29,6 +29,6 @@ public class Project {
     private Date fecha;
     @ManyToOne
     @JoinColumn(name = "admin_id")
-    private Admin Admin;
+    private Admin admin;
 
 }
