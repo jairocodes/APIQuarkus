@@ -4,7 +4,7 @@ import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.reactive.ReactiveMailer;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.inject.Inject;
-import jakarta.persistence.PersistenceException;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -29,32 +29,28 @@ public class ComentarioResource {
     @ConfigProperty(name = "app.mail.admin-recipient")
     String adminRecipient;
 
-    @GET
-    @Path("/comentarioId")
-    //se utiliza para obtener un comentario
-    public Comentario getComentario() {
-        return comentario.getComentario();
-    }
+    @ConfigProperty(name = "app.reports.output-dir")
+    String reportsOutputDir;
 
+    @GET
+    @Path("/{id}")
+    public Comentario getComentario(@PathParam("id") Integer id) {
+        return comentario.getComentario(id);
+    }
 
     @POST
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
-    //se utiliza para guardar un comentario
-    public Response createComentario(Comentario Rcomentario) {
-        try{
-            comentario.save(Rcomentario);
-            sendThankYouEmail(Rcomentario);
-            comentario.saveFile(Rcomentario);
-            return Response.ok("Comentario guardado").build();
-        }catch (PersistenceException e){
-            throw e;
-        }
+    public Response createComentario(@Valid Comentario Rcomentario) {
+        comentario.save(Rcomentario);
+        sendThankYouEmail(Rcomentario);
+        comentario.saveFile(Rcomentario);
+        return Response.ok("Comentario guardado").build();
     }
 
     @GET
-    //http://localhost:8080/Comentario/paginated?page=2
-    public PaginatedReponse<Comentario> list(@QueryParam("page")@DefaultValue("1") int page) {
+    //http://localhost:8080/Comentario?page=2
+    public PaginatedResponse<Comentario> list(@QueryParam("page")@DefaultValue("1") int page) {
         return comentario.paginated(page);
     }
 
@@ -77,8 +73,10 @@ public class ComentarioResource {
 
     @Scheduled(cron = "0 0 22 * * ?")
     public void executeDailyTask() throws IOException {
-        String fileName = "C:\\Users\\admin\\Desktop\\Project_quarkus\\api-quarkus\\" + LocalDate.now() + "_comentarios.csv";
-        File csvFile = new File(fileName);
+        File csvFile = java.nio.file.Path.of(reportsOutputDir, LocalDate.now() + "_comentarios.csv").toFile();
+        if (!csvFile.exists()) {
+            return;
+        }
         sendAdminReport(csvFile);
     }
 

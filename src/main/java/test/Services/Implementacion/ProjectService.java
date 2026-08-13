@@ -15,8 +15,8 @@ public class ProjectService implements IProjectService {
     IProjectRepo projectRepository;
 
 
-    public Project getProject(){
-        return projectRepository.getProject();
+    public Project getProject(Integer id){
+        return projectRepository.getProject(id);
     }
 
     public List<Project> getProjects(){
@@ -24,4 +24,3 @@ public class ProjectService implements IProjectService {
     }
 
 }
-

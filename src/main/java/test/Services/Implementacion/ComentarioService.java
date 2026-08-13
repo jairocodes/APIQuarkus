@@ -1,29 +1,33 @@
 package test.Services.Implementacion;
 
 import io.quarkus.panache.common.Page;
-import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import model.Comentario;
-import model.Request;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 import test.Repository.ComentarioRepository;
-import test.Resources.PaginatedReponse;
+import test.Resources.PaginatedResponse;
 import test.Services.IComentarioService;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 
 @ApplicationScoped
 public class ComentarioService implements IComentarioService {
 
+        private static final Logger LOG = Logger.getLogger(ComentarioService.class);
+
         @Inject
         ComentarioRepository comentarioRepository;
+
+        @ConfigProperty(name = "app.reports.output-dir")
+        String reportsOutputDir;
 
         @Override
         public void save(Comentario com){
@@ -31,8 +35,8 @@ public class ComentarioService implements IComentarioService {
         }
 
 
-        public Comentario getComentario(){
-            return comentarioRepository.getComentario();
+        public Comentario getComentario(Integer id){
+            return comentarioRepository.getComentario(id);
         }
 
         public List<Comentario> getComentarios(){
@@ -40,29 +44,25 @@ public class ComentarioService implements IComentarioService {
         }
 
 
-        public PaginatedReponse<Comentario> paginated (int page){
+        public PaginatedResponse<Comentario> paginated (int page){
             Page p = new Page(page -1, 10);
             var query = comentarioRepository.findAll().page(p);
-            return new PaginatedReponse<>(query);
+            return new PaginatedResponse<>(query);
         }
 
-//necesito cambio
         public void saveFile (Comentario comentario){
-            // Nombre del archivo con la fecha actual
-            String filename = LocalDate.now() + "_comentarios.csv";
-
-            // Verificar si el archivo ya existe
-            File file = new File(filename);
+            Path path = Path.of(reportsOutputDir, LocalDate.now() + "_comentarios.csv");
+            File file = path.toFile();
             boolean fileExists = file.exists();
 
-            try (FileWriter writer = new FileWriter(filename, true)) { // "true" indica modo de append (añadir)
-                if (!fileExists) { // Si el archivo no existe, agregar encabezados
-                    writer.write("Comentario,Fecha, nombre usuario, email usuario, Proyecto\n");
+            try (FileWriter writer = new FileWriter(file, true)) {
+                if (!fileExists) {
+                    writer.write("Comentario,Fecha,nombre usuario,email usuario,Proyecto\n");
                 }
-                // Escribir el nuevo comentario
                 writer.write(comentario.getComentario() + "," + comentario.getFecha() + "," + comentario.getNombreUser() + "," + comentario.getEmailUser() + "," + comentario.getProject().getProyecto_id() + "\n");
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error("No se pudo escribir el reporte de comentarios en " + path, e);
+                throw new UncheckedIOException(e);
             }
         }
 

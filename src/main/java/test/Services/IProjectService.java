@@ -5,7 +5,6 @@ import model.Project;
 import java.util.List;
 
 public interface IProjectService {
-//    public void save(Project pro);
-    public Project getProject();
+    public Project getProject(Integer id);
     public List<Project> getProjects();
 }
