@@ -1,0 +1,7 @@
+target/
+*.iml
+.idea/
+*.class
+*.log
+*_comentarios.csv
+.env
