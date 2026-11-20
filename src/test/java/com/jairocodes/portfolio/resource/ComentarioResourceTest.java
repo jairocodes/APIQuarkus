@@ -23,7 +23,9 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -57,7 +59,8 @@ class ComentarioResourceTest {
                 .body("comentario", equalTo("Excelente proyecto"))
                 .body("nombreUser", equalTo("Ana"))
                 .body("emailUser", equalTo("ana@correo.test"))
-                .body("project.proyecto_id", equalTo(1));
+                .body("project.proyecto_id", equalTo(1))
+                .body("project.admin", not(hasKey("email")));
     }
 
     @Test
