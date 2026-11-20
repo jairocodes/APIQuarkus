@@ -43,9 +43,7 @@ public class ComentarioResource {
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createComentario(@Valid Comentario Rcomentario) {
-        comentario.save(Rcomentario);
-        sendThankYouEmail(Rcomentario);
-        comentario.saveFile(Rcomentario);
+        comentario.registrarComentario(Rcomentario);
         return Response.ok("Comentario guardado").build();
     }
 
@@ -53,14 +51,6 @@ public class ComentarioResource {
     //http://localhost:8080/Comentario?page=2
     public PaginatedResponse<Comentario> list(@QueryParam("page") @DefaultValue("1") @Min(1) int page) {
         return comentario.paginated(page);
-    }
-
-    private void sendThankYouEmail(Comentario comentario) {
-        reactiveMailer.send(Mail.withText(
-                comentario.getEmailUser(),
-                "Agradecimiento",
-                "Hola, Gracias por realizar el comentario\n\ncomentario realizado \n\n" + comentario.getComentario()
-        )).await().indefinitely();
     }
 
     private void sendAdminReport(File csvFile) throws IOException {
