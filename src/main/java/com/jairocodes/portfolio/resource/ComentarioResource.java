@@ -1,4 +1,4 @@
-package test.Resources;
+package com.jairocodes.portfolio.resource;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.reactive.ReactiveMailer;
@@ -8,9 +8,9 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import model.Comentario;
+import com.jairocodes.portfolio.model.Comentario;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import test.Services.Implementacion.ComentarioService;
+import com.jairocodes.portfolio.service.impl.ComentarioService;
 
 import java.io.File;
 import java.io.IOException;

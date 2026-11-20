@@ -1,6 +1,6 @@
-package test.Services;
+package com.jairocodes.portfolio.service;
 
-import model.Project;
+import com.jairocodes.portfolio.model.Project;
 
 import java.util.List;
 

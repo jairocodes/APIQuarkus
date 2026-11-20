@@ -1,7 +1,7 @@
-package test.Implementacion;
+package com.jairocodes.portfolio.repository.api;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-import model.Comentario;
+import com.jairocodes.portfolio.model.Comentario;
 
 import java.util.List;
 

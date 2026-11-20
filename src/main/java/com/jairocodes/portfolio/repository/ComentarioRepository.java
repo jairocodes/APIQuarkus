@@ -1,12 +1,12 @@
-package test.Repository;
+package com.jairocodes.portfolio.repository;
 
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import model.Comentario;
-import test.Implementacion.IComentarioRepo;
+import com.jairocodes.portfolio.model.Comentario;
+import com.jairocodes.portfolio.repository.api.IComentarioRepo;
 
 import java.util.List;
 

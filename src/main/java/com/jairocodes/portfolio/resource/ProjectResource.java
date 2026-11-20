@@ -1,12 +1,12 @@
-package test.Resources;
+package com.jairocodes.portfolio.resource;
 
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import model.Project;
-import test.Services.Implementacion.ProjectService;
+import com.jairocodes.portfolio.model.Project;
+import com.jairocodes.portfolio.service.impl.ProjectService;
 
 import java.util.List;
 

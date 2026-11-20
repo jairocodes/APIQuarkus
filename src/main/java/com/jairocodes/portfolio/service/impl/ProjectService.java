@@ -1,10 +1,10 @@
-package test.Services.Implementacion;
+package com.jairocodes.portfolio.service.impl;
 
 import jakarta.inject.Inject;
-import model.Project;
+import com.jairocodes.portfolio.model.Project;
 import jakarta.enterprise.context.ApplicationScoped;
-import test.Implementacion.IProjectRepo;
-import test.Services.IProjectService;
+import com.jairocodes.portfolio.repository.api.IProjectRepo;
+import com.jairocodes.portfolio.service.IProjectService;
 
 import java.util.List;
 

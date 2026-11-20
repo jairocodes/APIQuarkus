@@ -1,4 +1,4 @@
-package test.Resources;
+package com.jairocodes.portfolio.resource;
 
 import jakarta.persistence.PersistenceException;
 import jakarta.ws.rs.core.MediaType;
