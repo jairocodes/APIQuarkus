@@ -25,7 +25,8 @@ class OpenApiTest {
                 .body("paths", hasKey("/Project/{id}"))
                 .body("paths", hasKey("/Comentario"))
                 .body("paths", hasKey("/Comentario/{id}"))
-                .body("paths", hasKey("/Comentario/save"));
+                .body("paths", hasKey("/Comentario/save"))
+                .body("paths", hasKey("/Contacto"));
     }
 
     @Test

@@ -10,6 +10,8 @@ Todos los días a las 22:00 una tarea programada envía el reporte CSV del día 
 
 El registro de un comentario es **atómico**: si falla cualquiera de los pasos, no se guarda el comentario ni se modifica el reporte.
 
+Los visitantes también pueden **contactar al administrador** con un formulario: el mensaje se reenvía a su correo con *Reply-To* al visitante. La dirección del administrador nunca se expone en las respuestas de la API.
+
 **Frontend:** [InterfazGraficaPrimerfaces](https://github.com/jairocodes/InterfazGraficaPrimerfaces) (JSF + PrimeFaces), que consume esta API.
 
 ## Tecnologías
@@ -87,6 +89,7 @@ erDiagram
 | `GET` | `/Comentario/{id}` | Obtiene un comentario con su proyecto | `200`, `204` si no existe |
 | `GET` | `/Comentario?page=N` | Lista los comentarios en páginas de 10: `{ data, page, totalPages }` | `200`, `400` si `page < 1` |
 | `POST` | `/Comentario/save` | Valida y registra un comentario, lo agrega al CSV y envía el correo de agradecimiento | `200`, `400` datos inválidos, `500` error al generar el reporte o enviar el correo |
+| `POST` | `/Contacto` | Envía el mensaje de un visitante al correo del administrador (`{ nombre, email, mensaje }`) | `200`, `400` datos inválidos, `500` error al enviar el correo |
 
 Ejemplo de cuerpo para `POST /Comentario/save`:
 
@@ -96,6 +99,16 @@ Ejemplo de cuerpo para `POST /Comentario/save`:
   "nombreUser": "Ana",
   "emailUser": "ana@correo.com",
   "project": { "proyecto_id": 1 }
+}
+```
+
+Ejemplo de cuerpo para `POST /Contacto`:
+
+```json
+{
+  "nombre": "Ana",
+  "email": "ana@correo.com",
+  "mensaje": "Hola, me interesa conversar sobre tu proyecto."
 }
 ```
 
@@ -120,7 +133,7 @@ La aplicación lee sus credenciales desde variables de entorno; ningún secreto 
 | `MAIL_USERNAME` | Usuario SMTP | `resend` |
 | `MAIL_PASSWORD` | Contraseña SMTP / API key | *(obligatoria)* |
 | `MAIL_FROM` | Dirección "De" de los correos enviados | `onboarding@resend.dev` |
-| `ADMIN_MAIL_RECIPIENT` | Dirección que recibe el reporte diario de comentarios | *(obligatoria)* |
+| `ADMIN_MAIL_RECIPIENT` | Dirección que recibe el reporte diario de comentarios y los mensajes de contacto | *(obligatoria)* |
 | `REPORTS_OUTPUT_DIR` | Directorio donde se escribe y se lee el reporte CSV diario | `.` |
 | `HTTP_PORT` | Puerto HTTP | `8081` |
 
@@ -152,8 +165,8 @@ Las pruebas **no necesitan MySQL, Docker ni un servidor de correo**. El perfil `
 
 | Tipo | Clases | Qué cubren |
 |---|---|---|
-| Unitarias (Mockito) | `ProjectServiceTest`, `ComentarioServiceTest` | Consulta por id, paginación, escritura y escapado del CSV, orden y reversión del registro atómico |
-| Integración (`@QuarkusTest` + RestAssured) | `ProjectResourceTest`, `ComentarioResourceTest` | Endpoints completos, validación con Bean Validation (`400`), envío de correo y línea en el CSV |
+| Unitarias (Mockito) | `ProjectServiceTest`, `ComentarioServiceTest`, `ContactoServiceTest` | Consulta por id, paginación, escritura y escapado del CSV, orden y reversión del registro atómico, armado del correo de contacto |
+| Integración (`@QuarkusTest` + RestAssured) | `ProjectResourceTest`, `ComentarioResourceTest`, `ContactoResourceTest` | Endpoints completos, validación con Bean Validation (`400`), envío de correos, línea en el CSV y que el correo del administrador no se exponga |
 | Integración | `ComentarioFalloCorreoTest` | Atomicidad: si el SMTP falla, no se guarda el comentario ni cambia el CSV |
 | Integración | `OpenApiTest` | Generación de la especificación OpenAPI y disponibilidad de Swagger UI |
 
