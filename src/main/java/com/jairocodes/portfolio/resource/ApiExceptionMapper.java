@@ -1,6 +1,7 @@
 package com.jairocodes.portfolio.resource;
 
 import jakarta.persistence.PersistenceException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -16,6 +17,11 @@ public class ApiExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
+        if (exception instanceof WebApplicationException webException) {
+            // Errores HTTP propios de JAX-RS (404, 405, 415...): se respeta su codigo original.
+            return webException.getResponse();
+        }
+
         LOG.error("Error no manejado al procesar la solicitud", exception);
 
         if (exception instanceof PersistenceException) {
