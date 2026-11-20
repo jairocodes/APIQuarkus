@@ -5,6 +5,7 @@ import io.quarkus.mailer.reactive.ReactiveMailer;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -50,7 +51,7 @@ public class ComentarioResource {
 
     @GET
     //http://localhost:8080/Comentario?page=2
-    public PaginatedResponse<Comentario> list(@QueryParam("page")@DefaultValue("1") int page) {
+    public PaginatedResponse<Comentario> list(@QueryParam("page") @DefaultValue("1") @Min(1) int page) {
         return comentario.paginated(page);
     }
 
