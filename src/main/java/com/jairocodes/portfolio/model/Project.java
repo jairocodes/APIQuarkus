@@ -1,4 +1,4 @@
-package model;
+package com.jairocodes.portfolio.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

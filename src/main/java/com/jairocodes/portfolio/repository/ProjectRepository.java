@@ -1,10 +1,10 @@
-package test.Repository;
+package com.jairocodes.portfolio.repository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import model.Project;
-import test.Implementacion.IProjectRepo;
+import com.jairocodes.portfolio.model.Project;
+import com.jairocodes.portfolio.repository.api.IProjectRepo;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package test.Repository;
+package com.jairocodes.portfolio.repository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
-import model.Admin;
-import test.Implementacion.IAdminRepo;
+import com.jairocodes.portfolio.model.Admin;
+import com.jairocodes.portfolio.repository.api.IAdminRepo;
 
 @ApplicationScoped
 public class AdminRepository implements IAdminRepo {

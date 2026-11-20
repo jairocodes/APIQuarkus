@@ -1,4 +1,4 @@
-package test.Resources;
+package com.jairocodes.portfolio.resource;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 

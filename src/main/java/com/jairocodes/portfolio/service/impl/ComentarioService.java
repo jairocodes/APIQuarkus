@@ -1,14 +1,14 @@
-package test.Services.Implementacion;
+package com.jairocodes.portfolio.service.impl;
 
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import model.Comentario;
+import com.jairocodes.portfolio.model.Comentario;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
-import test.Repository.ComentarioRepository;
-import test.Resources.PaginatedResponse;
-import test.Services.IComentarioService;
+import com.jairocodes.portfolio.repository.ComentarioRepository;
+import com.jairocodes.portfolio.resource.PaginatedResponse;
+import com.jairocodes.portfolio.service.IComentarioService;
 
 import java.io.File;
 import java.io.FileWriter;
