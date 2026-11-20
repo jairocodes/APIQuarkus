@@ -10,11 +10,13 @@ import com.jairocodes.portfolio.repository.ComentarioRepository;
 import com.jairocodes.portfolio.resource.PaginatedResponse;
 import com.jairocodes.portfolio.service.IComentarioService;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import java.util.List;
 public class ComentarioService implements IComentarioService {
 
         private static final Logger LOG = Logger.getLogger(ComentarioService.class);
+        private static final String CSV_HEADER = "Comentario,Fecha,nombre usuario,email usuario,Proyecto\n";
 
         @Inject
         ComentarioRepository comentarioRepository;
@@ -52,18 +55,48 @@ public class ComentarioService implements IComentarioService {
 
         public void saveFile (Comentario comentario){
             Path path = Path.of(reportsOutputDir, LocalDate.now() + "_comentarios.csv");
-            File file = path.toFile();
-            boolean fileExists = file.exists();
+            boolean fileExists = Files.exists(path);
 
-            try (FileWriter writer = new FileWriter(file, true)) {
+            try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
                 if (!fileExists) {
-                    writer.write("Comentario,Fecha,nombre usuario,email usuario,Proyecto\n");
+                    writer.write(CSV_HEADER);
                 }
-                writer.write(comentario.getComentario() + "," + comentario.getFecha() + "," + comentario.getNombreUser() + "," + comentario.getEmailUser() + "," + comentario.getProject().getProyecto_id() + "\n");
+                writer.write(toCsvLine(comentario));
             } catch (IOException e) {
                 LOG.error("No se pudo escribir el reporte de comentarios en " + path, e);
                 throw new UncheckedIOException(e);
             }
+        }
+
+        private static String toCsvLine(Comentario comentario) {
+            Integer proyectoId = comentario.getProject() != null ? comentario.getProject().getProyecto_id() : null;
+            return String.join(",",
+                    csvField(comentario.getComentario()),
+                    csvField(comentario.getFecha()),
+                    csvField(comentario.getNombreUser()),
+                    csvField(comentario.getEmailUser()),
+                    csvField(proyectoId)) + "\n";
+        }
+
+        /**
+         * Convierte un valor en un campo CSV segun RFC 4180: si contiene comas, comillas o
+         * saltos de linea se encierra entre comillas y las comillas internas se duplican.
+         * Los valores que empiezan con =, +, -, @, tabulador o retorno de carro se prefijan
+         * con ' para que una hoja de calculo no los interprete como formulas (CSV injection).
+         */
+        static String csvField(Object value) {
+            if (value == null) {
+                return "";
+            }
+            String text = value.toString();
+            if (!text.isEmpty() && "=+-@\t\r".indexOf(text.charAt(0)) >= 0) {
+                text = "'" + text;
+            }
+            if (text.contains(",") || text.contains("\"") || text.contains("\n") || text.contains("\r")) {
+                text = "\"" + text.replace("\"", "\"\"") + "\"";
+            }
+            return text;
         }
 
 }
